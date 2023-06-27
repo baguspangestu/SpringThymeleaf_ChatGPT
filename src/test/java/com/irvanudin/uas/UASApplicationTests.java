@@ -1,4 +1,4 @@
-package com.irvanudin.uas.kuis;
+package com.irvanudin.uas;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
