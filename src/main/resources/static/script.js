@@ -18,8 +18,6 @@ let isLoading = false;
 
 emptyMessages();
 
-if (sliceMsg.length !== 0) chatContainer.innerHTML = '';
-
 for (let i = 0; i <= sliceMsg.length - 1; i++) {
   bubbleChat({ role: sliceMsg[i].role, content: sliceMsg[i].content });
 }
@@ -35,7 +33,6 @@ chatReset.addEventListener('click', () => {
   localStorage.removeItem(messagesKey);
   messages.length = 0;
 
-  chatContainer.innerHTML = '';
   emptyMessages();
 
   isMenuOpen = false;
@@ -110,16 +107,13 @@ function scrollChat({ smooth = false }) {
 }
 
 async function onChatSubmited() {
-  if (isLoading) return;
-
-  const userContent = chatForm.value;
+  const content = chatForm.value;
+  if (isLoading || content.length === 0) return;
 
   chatForm.value = '';
   chatSubmit.disabled = true;
 
-  if (userContent.length === 0) return;
-
-  saveMessages('user', userContent);
+  saveMessages('user', content);
 
   isLoading = true;
   chatSubmit.classList.add('hidden');
@@ -171,7 +165,6 @@ function saveMessages(role, content) {
   messages.push(data);
   sliceMsg.push(data);
   localStorage.setItem(messagesKey, JSON.stringify(messages));
-  if (messages.length === 1) chatContainer.innerHTML = '';
   bubbleChat({ role, content });
   if (scrollable) scrollChat({ smooth: true });
 }
@@ -199,12 +192,12 @@ function emptyMessages() {
   divElement.appendChild(iconElement);
   divElement.appendChild(textElement);
 
-  chatContainer.appendChild(divElement);
+  chatContainer.innerHTML = divElement.outerHTML;
 }
 
 function bubbleChat({ role, content, onTop = false }) {
   const bubbleContainer = document.createElement('div');
-  bubbleContainer.classList.add('my-1', 'flex');
+  bubbleContainer.classList.add('chat-bubble', 'my-1', 'flex');
 
   const chatElement = document.createElement('div');
   chatElement.classList.add(
@@ -233,7 +226,9 @@ function bubbleChat({ role, content, onTop = false }) {
     bubbleContainer.appendChild(iconElement);
   }
 
-  if (onTop) {
+  if (chatContainer.querySelectorAll('.chat-bubble').length === 0) {
+    chatContainer.innerHTML = bubbleContainer.outerHTML;
+  } else if (onTop) {
     const firstChild = chatContainer.firstChild;
     chatContainer.insertBefore(bubbleContainer, firstChild);
   } else {
