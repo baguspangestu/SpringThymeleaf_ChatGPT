@@ -7,7 +7,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(246, 120, 120, 0.4);
   border-radius: 8px;
 }
 
@@ -18,6 +18,12 @@
   100% {
     transform: translate3d(-50%, -50%, 0) rotate(360deg);
   }
+}
+
+.bg-chat {
+  background-image: url('chat_pattern.png');
+  background-position: center;
+  background-size: 800px 323px;
 }
 
 .spin::before {

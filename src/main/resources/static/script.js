@@ -179,11 +179,11 @@ function emptyMessages() {
     'flex-col',
     'justify-center',
     'text-center',
-    'text-white/80'
+    'text-red-500/80'
   );
 
   const iconElement = document.createElement('i');
-  iconElement.classList.add('fa-solid', 'fa-comment-slash');
+  iconElement.classList.add('fa-solid', 'fa-comment');
   iconElement.style.fontSize = '4em';
 
   const textElement = document.createElement('p');
@@ -197,31 +197,35 @@ function emptyMessages() {
 }
 
 function bubbleChat({ role, content, onTop = false }) {
+  const relpacedContent = content.replace(/\n/g, '<br>');
+
   const bubbleChats = chatContainer.querySelectorAll('.chat-bubble');
   const bubbleContainer = document.createElement('div');
   bubbleContainer.classList.add('chat-bubble', 'my-1', 'flex');
 
   const chatElement = document.createElement('div');
   chatElement.classList.add(
-    'bg-slate-700/80',
     'my-1',
     'mx-2',
     'p-2',
     'rounded-lg',
-    'break-words'
+    'break-words',
+    'text-black/80'
   );
   chatElement.style.maxWidth = '80%';
-  chatElement.textContent = content;
+  chatElement.innerHTML = relpacedContent;
 
   const iconElement = document.createElement('i');
   iconElement.classList.add('fa-solid');
 
   if (role === 'system') {
+    chatElement.classList.add('bg-red-300/80');
     bubbleContainer.classList.add('justify-start');
     iconElement.classList.add('py-4', 'fa-robot');
     bubbleContainer.appendChild(iconElement);
     bubbleContainer.appendChild(chatElement);
   } else {
+    chatElement.classList.add('bg-red-400/80');
     bubbleContainer.classList.add('justify-end');
     iconElement.classList.add('py-4', 'fa-user');
     bubbleContainer.appendChild(chatElement);
