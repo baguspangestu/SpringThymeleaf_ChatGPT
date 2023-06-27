@@ -1,34 +1,49 @@
 package com.irvanudin.uas.controllers;
 
-import org.springframework.web.bind.annotation.GetMapping;
+import java.util.List;
+
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.irvanudin.uas.models.MessageModel;
+import com.irvanudin.uas.models.OpenAIResponseModel;
+import com.irvanudin.uas.models.ResponseModel;
+import com.irvanudin.uas.services.OpenAIService;
 
 @RestController
 @RequestMapping("/api")
 public class APIController {
 
-    @GetMapping("/chat")
+    private final OpenAIService openAIService;
+
+    public APIController(OpenAIService openAIService) {
+        this.openAIService = openAIService;
+    }
+
+    @PostMapping("/chat")
     @ResponseBody
-    public MyResponse chat() {
-        MyResponse response = new MyResponse("Esse fugiat non qui amet fugiat laborum laboris elit sunt et Lorem.");
+    public ResponseModel chat(@RequestBody List<MessageModel> messages) {
+        String responseString = openAIService.getMessage(messages);
+        ResponseModel response;
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+            OpenAIResponseModel openAIResponse = objectMapper.readValue(responseString, OpenAIResponseModel.class);
+
+            String message = openAIResponse.getChoices().get(0).getMessage().getContent();
+
+            response = new ResponseModel(message);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            response = new ResponseModel("Terjadi kesalahan, silakan coba lagi");
+        }
+
         return response;
-    }
-}
-
-class MyResponse {
-    private String message;
-
-    public MyResponse(String message) {
-        this.message = message;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
     }
 }

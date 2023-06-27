@@ -197,6 +197,7 @@ function emptyMessages() {
 }
 
 function bubbleChat({ role, content, onTop = false }) {
+  const bubbleChats = chatContainer.querySelectorAll('.chat-bubble');
   const bubbleContainer = document.createElement('div');
   bubbleContainer.classList.add('chat-bubble', 'my-1', 'flex');
 
@@ -227,7 +228,7 @@ function bubbleChat({ role, content, onTop = false }) {
     bubbleContainer.appendChild(iconElement);
   }
 
-  if (chatContainer.querySelectorAll('.chat-bubble').length === 0) {
+  if (bubbleChats.length === 0) {
     chatContainer.innerHTML = bubbleContainer.outerHTML;
   } else if (onTop) {
     const firstChild = chatContainer.firstChild;
