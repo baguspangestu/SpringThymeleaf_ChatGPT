@@ -183,12 +183,12 @@ function emptyMessages() {
   );
 
   const iconElement = document.createElement('i');
-  iconElement.classList.add('fa-solid', 'fa-comment');
-  iconElement.style.fontSize = '4em';
+  iconElement.classList.add('fa-solid', 'fa-comment-dots');
+  iconElement.style.fontSize = '8em';
 
   const textElement = document.createElement('p');
-  textElement.classList.add('mt-4');
-  textElement.textContent = 'Belum ada chat';
+  textElement.classList.add('mt-4', 'font-semibold');
+  textElement.textContent = 'Ketikan pesan apapun untuk memulai';
 
   divElement.appendChild(iconElement);
   divElement.appendChild(textElement);
