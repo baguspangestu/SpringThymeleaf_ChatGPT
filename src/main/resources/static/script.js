@@ -1,4 +1,3 @@
-const messagesKey = 'messages';
 const chatContainer = document.getElementById('chatContainer');
 const chatForm = document.getElementById('chatForm');
 const scrollBtn = document.getElementById('scrollBtn');
@@ -9,17 +8,20 @@ const loading = document.getElementById('loading');
 const chatReset = chatMenu.querySelectorAll('button')[0];
 const iconMenu = chatMenuBtn.querySelector('i');
 
+const messagesKey = 'messages';
+const messagesCount = 20;
+const messages = JSON.parse(localStorage.getItem(messagesKey)) ?? [];
+const sliceMsg = messages.slice(-messagesCount);
+
 let isMenuOpen = false;
 let isLoading = false;
 
-const messages = JSON.parse(localStorage.getItem(messagesKey)) ?? [];
+emptyMessages();
 
-noChat();
+if (sliceMsg.length !== 0) chatContainer.innerHTML = '';
 
-if (messages.length !== 0) chatContainer.innerHTML = '';
-
-for (let i = 0; i <= messages.length - 1; i++) {
-  bubbleChat(messages[i].role, messages[i].content);
+for (let i = 0; i <= sliceMsg.length - 1; i++) {
+  bubbleChat({ role: sliceMsg[i].role, content: sliceMsg[i].content });
 }
 
 document.addEventListener('DOMContentLoaded', scrollChat);
@@ -34,10 +36,12 @@ chatReset.addEventListener('click', () => {
   messages.length = 0;
 
   chatContainer.innerHTML = '';
-  noChat();
+  emptyMessages();
 
   isMenuOpen = false;
   openMenu(isMenuOpen);
+
+  onScroll();
 });
 
 chatForm.addEventListener('input', (event) => {
@@ -46,24 +50,45 @@ chatForm.addEventListener('input', (event) => {
 });
 
 chatForm.addEventListener('keydown', (event) => {
-  if (event.key === 'Enter') onChat();
+  if (event.key === 'Enter') onChatSubmited();
 });
 
-chatSubmit.addEventListener('click', onChat);
+chatSubmit.addEventListener('click', onChatSubmited);
 
 chatContainer.addEventListener('scroll', () => {
-  const scrollable =
-    chatContainer.scrollTop >=
-    chatContainer.scrollHeight - chatContainer.clientHeight - 60;
+  onScroll();
 
-  if (scrollable) {
-    scrollBtn.classList.add('hidden');
-  } else {
-    scrollBtn.classList.remove('hidden');
+  if (chatContainer.scrollTop <= 60 && messages.length !== sliceMsg.length) {
+    const endIndex = messages.length - sliceMsg.length; // Indeks awal
+    const startIndex =
+      endIndex - messagesCount >= 0 ? endIndex - messagesCount : 0;
+
+    const beforeMsg = messages.slice(startIndex, endIndex).reverse();
+
+    for (let i = 0; i <= beforeMsg.length - 1; i++) {
+      const data = { role: beforeMsg[i].role, content: beforeMsg[i].content };
+      sliceMsg.unshift(data);
+      bubbleChat({
+        ...data,
+        onTop: true,
+      });
+    }
   }
 });
 
 scrollBtn.addEventListener('click', () => scrollChat({ smooth: true }));
+
+function onScroll() {
+  const inArea =
+    chatContainer.scrollTop >=
+    chatContainer.scrollHeight - chatContainer.clientHeight - 60;
+
+  if (inArea) {
+    scrollBtn.classList.add('hidden');
+  } else {
+    scrollBtn.classList.remove('hidden');
+  }
+}
 
 function openMenu(status) {
   if (status) {
@@ -84,7 +109,7 @@ function scrollChat({ smooth = false }) {
   });
 }
 
-async function onChat() {
+async function onChatSubmited() {
   if (isLoading) return;
 
   const userContent = chatForm.value;
@@ -139,17 +164,19 @@ async function fetchData(messages) {
 
 function saveMessages(role, content) {
   const scrollable =
+    role === 'user' ||
     chatContainer.scrollTop >=
-    chatContainer.scrollHeight - chatContainer.clientHeight - 60;
-
-  messages.push({ role, content });
+      chatContainer.scrollHeight - chatContainer.clientHeight - 60;
+  const data = { role, content };
+  messages.push(data);
+  sliceMsg.push(data);
   localStorage.setItem(messagesKey, JSON.stringify(messages));
   if (messages.length === 1) chatContainer.innerHTML = '';
-  bubbleChat(role, content);
+  bubbleChat({ role, content });
   if (scrollable) scrollChat({ smooth: true });
 }
 
-function noChat() {
+function emptyMessages() {
   const divElement = document.createElement('div');
   divElement.classList.add(
     'h-full',
@@ -175,7 +202,7 @@ function noChat() {
   chatContainer.appendChild(divElement);
 }
 
-function bubbleChat(role, content) {
+function bubbleChat({ role, content, onTop = false }) {
   const bubbleContainer = document.createElement('div');
   bubbleContainer.classList.add('my-1', 'flex');
 
@@ -206,5 +233,10 @@ function bubbleChat(role, content) {
     bubbleContainer.appendChild(iconElement);
   }
 
-  chatContainer.appendChild(bubbleContainer);
+  if (onTop) {
+    const firstChild = chatContainer.firstChild;
+    chatContainer.insertBefore(bubbleContainer, firstChild);
+  } else {
+    chatContainer.appendChild(bubbleContainer);
+  }
 }
