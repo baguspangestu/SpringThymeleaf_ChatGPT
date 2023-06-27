@@ -10,6 +10,7 @@ const iconMenu = chatMenuBtn.querySelector('i');
 
 const messagesKey = 'messages';
 const messagesCount = 20;
+
 const messages = JSON.parse(localStorage.getItem(messagesKey)) ?? [];
 const sliceMsg = messages.slice(-messagesCount);
 
