@@ -2,9 +2,7 @@
 
 Aplikasi Chat GPT sebagai UAS kuliah S1 Sistem Informasi ITBA DCC Pringsewu 2023 dengan Bahasa Pemrograman Java dan Framework Spring Boot + Thymeleaf.
 
-<!-- ![Screenshot](screenshot.png) -->
-
-<span style="color:yellow;">**_[Project belum selesai!]_**</span>
+![Screenshot](screenshot.jpg)
 
 ---
 
