@@ -1,8 +1,10 @@
-# 🕌 JADWAl SHOLAT & IMSAKIYAH RAMADHAN 2023
+# 💬 Chat GPT
 
-Aplikasi Jadwal Imsyakiah Ramadhan 2023 sebagai UAS kuliah S1 Sistem Informasi ITBA DCC Pringsewu 2022 dengan Bahasa Pemrograman Java dan Framework Spring Boot + Thymeleaf.
+Aplikasi Chat GPT sebagai UAS kuliah S1 Sistem Informasi ITBA DCC Pringsewu 2023 dengan Bahasa Pemrograman Java dan Framework Spring Boot + Thymeleaf.
 
-![Screenshot](screenshot.png)
+<!-- ![Screenshot](screenshot.png) -->
+
+<span style="color:yellow;">**_[Project belum selesai!]_**</span>
 
 ---
 
